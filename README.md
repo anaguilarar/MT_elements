@@ -23,7 +23,7 @@ We provide google colabs to facilitate the understanding and implementation of t
 
 To get started, please refer to the following notebook:
 
-- Multi-Target prediction for element concentration: The [Multi-Target prediction for element concentration notebook]() explains the process that was done to get element concentration predictions.
+- Multi-Target prediction for element concentration: The [Multi-Target prediction for element concentration notebook](https://github.com/anaguilarar/MT_elements/blob/main/Multi-Target%20prediction%20for%20element%20concentration.ipynb) explains the process that was done to get element concentration predictions.
 
 
 

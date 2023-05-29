@@ -122,6 +122,12 @@ class SpectralData(ReadData):
         else:
             fd = calculate_fd(self.data, self.wavelengths)
         return fd
+    
+    @property
+    def second_derivative(self):
+        sd = calculate_fd(self.first_derivative, self.wavelengths[2:])
+        
+        return sd
 
     def __init__(self, path, columns_suffix = None, apply_sg = False, windowsize=15, order = 3) -> None:
 

@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import copy
 import os
+import tqdm
 
 import xgboost as xgb
 
@@ -442,6 +443,31 @@ def check_resultsinreporter(reporter, eoi, chain,typetolookfor = 'element'):
     return valresult
 class ElementsChainRegressor(RegressorChainM):
 
+    def _erc_performances(self,X, Y, kfolds, chain, verbose = True):
+            valmetrics = []
+            if verbose:
+                loopval = tqdm.tqdm(range(kfolds))
+            else:
+                loopval = range(kfolds)
+                
+            for k in loopval:
+                tr_x, tr_y, val_x, val_y = get_xyvaldata(X, Y, kfolds=kfolds, kifold = k, split_ids = self.split_ids)
+        
+                #initialmodel = copy.deepcopy(self.base_estimator)
+                m = self.fit(tr_x.to_numpy(), tr_y.to_numpy())
+                pdmetric = self.validation(val_x.to_numpy(), val_y.to_numpy())
+                for i, noi in enumerate(chain.split('_')):
+                    pdmetric[i]['id'] = noi
+                pdmetric = pd.concat(pdmetric)
+                pdmetric['cv'] = k
+                pdmetric['chain'] = chain
+                valmetrics.append(pdmetric)
+                self.reset()
+                del m
+
+            return pd.concat(valmetrics)
+
+
     def cv_single_output_validation(self, Y_pred):
 
         eval_metrics = []
@@ -522,7 +548,19 @@ class ElementsChainRegressor(RegressorChainM):
                         kfolds = None, not_include = None, 
                         checkpoint_path = None, suffix_check = '', thresh = 0.4, chain = None,
                         reporter = None):
-        
+        """
+        function to find the best chain for the multi-target regression. The function will repeat
+
+        Args:
+            element_to_predict (_type_): a terget element for prediction
+            kfolds (_type_, optional): number of folds for the evaluation. Defaults to None.
+            not_include (_type_, optional): _description_. Defaults to None.
+            checkpoint_path (_type_, optional): _description_. Defaults to None.
+            suffix_check (str, optional): _description_. Defaults to ''.
+            thresh (float, optional): _description_. Defaults to 0.4.
+            chain (_type_, optional): _description_. Defaults to None.
+            reporter (_type_, optional): _description_. Defaults to None.
+        """
         def erc_performances(X, Y, kfolds, chain):
             valmetrics = []
             for k in range(kfolds):
@@ -570,7 +608,7 @@ class ElementsChainRegressor(RegressorChainM):
             if j == 0:
                 if reporter:
                     val_singleelement = check_resultsinreporter(reporter, element_to_predict, chain,
-                                                                typetolookfor = 'element')
+                                                                typetolookfor = 'chain')
                     if type(val_singleelement) is pd.DataFrame:
                         r2ref = val_singleelement.r2.mean()
                         print('{}: reference accuracy: {:.3f}'.format(element_to_predict,r2ref))

@@ -183,7 +183,14 @@ class ElementsData(ReadData):
     
     #@property
     def data_elements(self,elements:list = None):
-        
+        """retrieve element concentration data
+
+        Args:
+            elements (list, optional): element names. If none element is used as input, all data will return. Defaults to None.
+
+        Returns:
+            pandas data frame
+        """
         indextoselect = [list(self.data.columns).index(i) for i in elements if i in self.data.columns]
         
         if len(indextoselect) > 0:

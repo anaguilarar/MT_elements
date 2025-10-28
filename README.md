@@ -1,6 +1,6 @@
 ## Element concentration prediction using a multi-target regression
 
-This repository contains the code necessary to reproduce the analysis presented in the paper titled 'A multi-target regressor method to predict element concentrations in tomato leaves using hyperspectral imaging and machine learning models'.
+This repository contains the code necessary to reproduce the analysis presented in the paper titled ['A multi-target regressor method to predict element concentrations in tomato leaves using hyperspectral imaging and machine learning models'](https://spj.science.org/doi/full/10.34133/plantphenomics.0146).
 
 The repository focuses on:
 
